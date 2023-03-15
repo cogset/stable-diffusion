@@ -6,6 +6,6 @@ if [ "${1#-}" != "$1" ]; then
 	set -- python launch.py "$@"
 fi
 
-COMMANDLINE_ARGS="--listen --api --nowebui"
+export COMMANDLINE_ARGS="--listen --api --nowebui"
 
 exec "$@"
