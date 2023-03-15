@@ -29,6 +29,6 @@ COPY docker-entrypoint.sh /usr/local/bin
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-EXPOSE 7860
+EXPOSE 7860 7861
 
 CMD ["python", "launch.py"]
