@@ -27,7 +27,7 @@ RUN set -eux; \
 
 COPY docker-entrypoint.sh /usr/local/bin
 
-ENTRYPOINT ["docker-entrypoint.py"]
+ENTRYPOINT ["docker-entrypoint.sh"]
 
 EXPOSE 7860
 
