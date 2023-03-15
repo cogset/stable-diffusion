@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
 
-conda activate aigc
+COMMANDLINE_ARGS="--listen --api --nowebui"
 
-exec "$@" $FC_CUSTOM_CONTAINER_EVENT
+exec "$@"

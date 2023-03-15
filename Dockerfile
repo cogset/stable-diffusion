@@ -1,42 +1,34 @@
-FROM debian:buster
-
-ENV ANACONDA_VERSION=py310_23.1.0
+FROM python:3.10
 
 RUN set -eux; \
         \
         apt-get update; \
         apt-get install -y --no-install-recommends \
                 ca-certificates \
-                git \
-                libfontconfig1  \
-                libglib2.0-0 \
-                libsm6  \
-                libxext-dev \
-                libxrender-dev \
+                libgl1 \
                 vim \
-                wget \
         ; \
         rm -r /var/lib/apt/lists/*; \
         \
-        wget -O miniconda-installer.sh https://repo.anaconda.com/miniconda/Miniconda3-${ANACONDA_VERSION}-1-Linux-x86_64.sh; \
-        bash miniconda-installer.sh -ub -p /usr/local; \
-        \
-        git clone https://github.com/CompVis/stable-diffusion.git /root/stable-diffusion; \
-        \
-        mkdir -p /root/models/stable-diffusion /root/stable-diffusion/models/ldm/stable-diffusion-v1; \
-        wget -O /root/models/stable-diffusion/v1-5-pruned-emaonly.ckpt https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.ckpt; \
-        ln -s /root/models/stable-diffusion/v1-5-pruned-emaonly.ckpt /root/stable-diffusion/models/ldm/stable-diffusion-v1/model.ckpt;
+        git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /root/stable-diffusion-webui;
 
-WORKDIR /root/stable-diffusion
-
-COPY environment.yaml /root/stable-diffusion
-COPY docker-entrypoint.sh /usr/local/bin
+WORKDIR /root/stable-diffusion-webui
 
 RUN set -eux; \
         \
-        conda init bash; \
-        conda env create -f environment.yaml;
+        pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu117; \
+        pip install cython opencv-python-headless gfpgan open-clip-torch xformers pyngrok clip-anytorch; \
+        pip install -r requirements_versions.txt; \
+        \
+        python launch.py --exit --skip-torch-cuda-test; \
+        \
+        wget -O /root/stable-diffusion-webui/models/Stable-diffusion/v1-5-pruned-emaonly.safetensors \
+                https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.safetensors;
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+COPY docker-entrypoint.sh /usr/local/bin
 
-CMD ["python", "scripts/txt2img.py"]
+ENTRYPOINT ["docker-entrypoint.py"]
+
+EXPOSE 7860
+
+CMD ["python", "launch.py"]
