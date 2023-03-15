@@ -16,9 +16,9 @@ WORKDIR /root/stable-diffusion-webui
 
 RUN set -eux; \
         \
-        pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu117; \
-        pip install cython opencv-python-headless gfpgan open-clip-torch xformers pyngrok clip-anytorch; \
-        pip install -r requirements_versions.txt; \
+        pip install --no-cache-dir torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu117; \
+        pip install --no-cache-dir cython opencv-python-headless gfpgan open-clip-torch xformers pyngrok clip-anytorch; \
+        pip install --no-cache-dir -r requirements_versions.txt; \
         \
         python launch.py --exit --skip-torch-cuda-test; \
         \
