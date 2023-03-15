@@ -13,6 +13,7 @@ RUN set -eux; \
                 libsm6  \
                 libxext-dev \
                 libxrender-dev \
+                vim \
                 wget \
         ; \
         rm -r /var/lib/apt/lists/*; \
@@ -33,6 +34,9 @@ COPY docker-entrypoint.sh /usr/local/bin
 
 RUN set -eux; \
         \
+        conda init bash; \
         conda env create -f environment.yaml;
 
 ENTRYPOINT ["docker-entrypoint.sh"]
+
+CMD ["python", "scripts/txt2img.py"]
